@@ -161,9 +161,3 @@ while running:
     pygame.display.flip()
 
 pygame.quit()
-
-
-
-
-
-#print(c1.checkOverlap(c2))
