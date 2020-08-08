@@ -1,6 +1,6 @@
 
 '''
-Can display expression tree only tree depth <= 6
+Can display expression tree only tree depth <= 4 
 '''
 
 import pygame
