@@ -176,7 +176,7 @@ class Tree:
         while not self.stack.isEmpty(): 
             self.posfix_list.append(self.stack.pop()) 
 
-        print(self.posfix_list)
+        #print(self.posfix_list)
   
   
        
