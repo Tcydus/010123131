@@ -1,8 +1,9 @@
-from Tree_pygame import Tree
-from Readfile import readText
+from tree import Tree
+from drawtree import DrawTree
+from readfile import readText
 import pygame
 from pygame.locals import *
-import time
+
 pygame.init()
 
 
@@ -26,51 +27,55 @@ WHITE = (255,255,255)
 
 
 
-text_addr = r"D:\Desktop_D\Kmutnb_Cpre\Software\2020-08-05\problem1\Expression.txt"
-save_addr = r"D:\Desktop_D\Kmutnb_Cpre\Software\2020-08-05\problem1\picture"
+text_addr = r"Expression.txt"  #edit to path that you read Expression.txt.
+save_addr = r"\picture"         #edit to path that you want to save picture.
+
 
 expression = readText(text_addr)
+pic_index = 0 
 
 
 
 
 first_time = True
+mouse_pressed = False
 
 while is_running:
 
     for e in pygame.event.get():
         if e.type == pygame.QUIT or (e.type == KEYDOWN and e.key == K_ESCAPE):
             is_running = False
+        elif e.type == pygame.MOUSEBUTTONDOWN:
+            pic_index  = (pic_index +1) % len(expression)
+
+
+
             
-    if first_time :
-        first_time = False
-        pic_index = 1
-        for string in expression:
-            
-            bool_express = Tree(string)
-            bool_express.setPygameScreen(scr_w,scr_h,screen)
+    bool_express = Tree(expression[pic_index])
 
-            bool_express.infixToPostfix()
-            bool_express.postfixToExpressionTree()
 
-            screen.fill(WHITE)
+    bool_express.infixToPostfix()
+    bool_express.postfixToExpressionTree()
 
-            bool_express.setZoom(zoom)
+    screen.fill(WHITE)
 
-            bool_express.drawExpressionTree()
+    pygame_drawtree = DrawTree(bool_express.expression_tree)
+    pygame_drawtree.set_pygame_screen(scr_w,scr_h,screen)
+    pygame_drawtree.set_scale(zoom)
+    pygame_drawtree.draw()
 
 
 
-            text_surface = font.render(string, True, BLUE)
-            text_rect = text_surface.get_rect()
-            text_rect.center = (0.5*scr_w, 0.8*scr_h)
-            screen.blit(text_surface, text_rect)
 
-            pygame.image.save(screen, save_addr+"\expression_"+str(pic_index)+".jpg")
-            
-            pygame.display.flip()
-            pic_index +=1
-            time.sleep(2)
+    text_surface = font.render(expression[pic_index], True, BLUE)
+    text_rect = text_surface.get_rect()
+    text_rect.center = (0.5*scr_w, 0.8*scr_h)
+    screen.blit(text_surface, text_rect)
+
+    pygame.image.save(screen, save_addr+"\expression_"+str(pic_index)+".jpg")
+    
+    pygame.display.flip()
+
             
         
    
