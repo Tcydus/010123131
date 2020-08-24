@@ -33,16 +33,20 @@ surface = pygame.Surface( screen.get_size(), pygame.SRCALPHA )
 img = None
 is_running = True 
 draw_first = True
+image_motion = False
 GREEN = (0,255,0)
+WHITE = (255,255,255)
 
 M,N = 2,3                           # assign max column and max row
 all_block = M*N
 rect_list = [None] * all_block      # list that hold a original rectangle 
 rect2_list = [None] * all_block     # list that hold a swap rectangle 
 m_downcol,m_downrow,index_downrect = None,None,None
+motion_x,motion_y = None,None
+
 
 rw, rh = scr_w//M, scr_h//N
-
+center_x,center_y = rw//2,rh//2
 
 
 class Rect:
@@ -89,15 +93,21 @@ while is_running:
             is_running = False
             
         elif e.type == pygame.MOUSEBUTTONDOWN:
+            image_motion = True
             # find a row and column that you drag
             m_downcol,m_downrow = checkColRow(e.pos[0],e.pos[1])
+            motion_x,motion_y = e.pos[0] - center_x,e.pos[1] - center_y
 
             # find an index of rectangle that you drag
             index_downrect = findIndex(m_downcol,m_downrow)
            
+        elif e.type == pygame.MOUSEMOTION and image_motion:
+
+            motion_x,motion_y = e.pos[0] - center_x,e.pos[1] - center_y
 
 
         elif e.type == pygame.MOUSEBUTTONUP:
+            image_motion = False
             # find a row and column that you drop  
             m_upcol,m_uprow = checkColRow(e.pos[0],e.pos[1])
 
@@ -136,8 +146,16 @@ while is_running:
             rect_pos = rect_list[index_rect_list].useRect() 
             rect_area = rect2_list[index_rect_list].useRect()
 
+            # if image_motion and i == m_downcol and j == m_downrow :
+            #     continue
+                
+            if image_motion and index_rect_list == index_downrect:
+                index_rect_list += 1
+                continue
+
+
             # draw green rectangle line
-            pygame.draw.rect( img, GREEN, rect_area,1) 
+            pygame.draw.rect( img, GREEN, rect_area,1)
 
             # blit image rectangle area at rectangle positon
             surface.blit( img, rect_pos,rect_area)
@@ -148,6 +166,22 @@ while is_running:
     
     # disable command that create rectangle object into list 
     draw_first = False
+
+    if image_motion :
+        
+        rect_pos = rect_list[index_downrect].useRect() 
+        rect_area = rect2_list[index_downrect].useRect()
+        
+
+        screen.fill(WHITE)
+        surface.blit( screen, rect_pos,rect_area)
+
+        rect_pos = (motion_x,motion_y,rw,rh)
+        
+        pygame.draw.rect( img, GREEN, rect_area,1)
+
+        # blit image rectangle area at rectangle positon
+        surface.blit( img, rect_pos,rect_area)
     
 
     # write the surface to the screen and update the display
