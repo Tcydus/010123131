@@ -26,6 +26,7 @@ class UiMainWindow(object):
 
         self.equal_state = False
         self.last_operator = ''
+
        
         self.button_arr = []
         self.button_value = [['CE', 'C', 'DEL', '÷'], 
@@ -54,7 +55,6 @@ class UiMainWindow(object):
             row = index // self.BUTTON_COL
             col = index % self.BUTTON_COL
             
-          
             button.clicked.connect(lambda f, text = self.button_value[row][col] :self.set_labeltext(text) )
         
         
@@ -71,8 +71,21 @@ class UiMainWindow(object):
        
         self.update_textlabel(self.stack_textlabel,self.stack_text,self.STACKTEXT_FONTSIZE)
 
+    def calculate(self):
+        text_cal = ''
+        for c in self.stack_text:
+            if c == 'x':
+                text_cal += '*'
+            elif c == '÷':
+                text_cal += '/'
+            else:
+                text_cal += c
+
+        return str(eval(text_cal))
+
 
     def set_labeltext(self,text):
+
 
         
         if text == 'DEL':
@@ -99,27 +112,19 @@ class UiMainWindow(object):
             
             
             if len(self.stack_text) == 0:
-                self.stack_text = self.entry_text +self.last_operator + self.last_entry
+                self.stack_text = self.entry_text +self.last_operator + self.last_entry  ## when you want to calculate with last entry (press '=' repidly)
 
             elif self.stack_text[-1] in '+-x÷':
                 self.stack_text += self.last_entry
 
             else:
-
                 self.last_entry = self.entry_text
                 self.stack_text += self.entry_text
 
             
-            text_cal = ''
-            for c in self.stack_text:
-                if c == 'x':
-                    text_cal += '*'
-                elif c == '÷':
-                    text_cal += '/'
-                else:
-                    text_cal += c
+           
                 
-            self.entry_text = str(eval(text_cal))
+            self.entry_text =  self.calculate()   # calculate from evaluate
             self.stack_text += text
 
             equal_state = True
@@ -137,8 +142,6 @@ class UiMainWindow(object):
 
          
 
-     
-
         elif text == "CE" :
             self.entry_text = '0'
            
@@ -146,24 +149,25 @@ class UiMainWindow(object):
         elif text == "C":
             self.entry_text = '0'
             self.stack_text = ''
+            self.last_entry = ''
+            self.last_operator = ''
             
 
-
         elif text in '+-x÷':
-            self.last_operator = text
-            self.last_entry = self.entry_text
-          
+            self.last_operator = text   
 
             if len(self.entry_text) == 0:
                 self.stack_text = self.entry_text + self.stack_text[:-1]   ## inherit operator
             else:   
                 self.stack_text += self.entry_text
-
        
+            self.entry_text = self.calculate()
+            self.last_entry = self.entry_text
             self.stack_text += text
-            self.entry_text = ''
-            
+            self.update_entry_textlabel()
             self.update_stack_textlabel()
+   
+            self.entry_text = ''
 
             print("Entry:"+self.entry_text+"\tStack:"+self.stack_text)
             return
