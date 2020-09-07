@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="cal_img">
+    <file>gray_color.png</file>
+    <file>white_color.png</file>
+  </qresource>
+</RCC>
