@@ -16,6 +16,9 @@ class Ui_MainWindow(object):
     def __init__(self):
         self.text = '0'
         self._translate = None
+    
+
+
         
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -359,6 +362,9 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
+        
+
+
         self.pushButton.clicked.connect(lambda f : self.set_labeltext("1"))
         self.pushButton_2.clicked.connect(lambda f : self.set_labeltext("2"))
         self.pushButton_3.clicked.connect(lambda f : self.set_labeltext("3"))
@@ -416,6 +422,11 @@ class Ui_MainWindow(object):
             if len(self.text) == 0:
                 self.text = '0' 
 
+            self.update_labeltext()
+        elif text == '=':
+            
+            print(self.text)
+            self.text = "sdd"
             self.update_labeltext()
 
         else:
