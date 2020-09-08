@@ -80,8 +80,13 @@ class UiMainWindow(object):
                 text_cal += '/'
             else:
                 text_cal += c
+        try:
+            return str(eval(text_cal))
+        except ZeroDivisionError:
+            return "Cannot divide by zero"
+            
 
-        return str(eval(text_cal))
+        
 
 
     def set_labeltext(self,text):
@@ -122,22 +127,24 @@ class UiMainWindow(object):
                 self.stack_text += self.entry_text
 
             
-           
-                
             self.entry_text =  self.calculate()   # calculate from evaluate
+
+            
             self.stack_text += text
 
             equal_state = True
                 
             self.update_stack_textlabel()
             self.update_entry_textlabel()
-
+            if self.entry_text == "Cannot divide by zero" :
+                self.entry_text = '0'
+                self.stack_text = ''
+                self.update_stack_textlabel()
             self.stack_text = ''
           
             
-            # self.stack_text = self.entry_text + self.last_operator
-            # self.entry_text = self.last_entry
-            print("Entry:"+self.entry_text+"\tStack:"+self.stack_text)
+            # print("Entry:"+self.entry_text+"\tStack:"+self.stack_text)
+
             return
 
          
@@ -156,33 +163,48 @@ class UiMainWindow(object):
         elif text in '+-x÷':
             self.last_operator = text   
 
-            if len(self.entry_text) == 0:
+            if len(self.entry_text) == 0 :
                 self.stack_text = self.entry_text + self.stack_text[:-1]   ## inherit operator
             else:   
                 self.stack_text += self.entry_text
        
             self.entry_text = self.calculate()
-            self.last_entry = self.entry_text
+           
             self.stack_text += text
             self.update_entry_textlabel()
             self.update_stack_textlabel()
+
+            if self.entry_text == "Cannot divide by zero" :
+                self.entry_text = '0'
+                self.stack_text = ''
+                self.update_stack_textlabel()
+            else:
+                self.last_entry = self.entry_text
    
             self.entry_text = ''
+           
 
-            print("Entry:"+self.entry_text+"\tStack:"+self.stack_text)
+            # print("Entry:"+self.entry_text+"\tStack:"+self.stack_text)
             return
            
         
         else:
             
-            if len(self.entry_text) ==0 or self.entry_text[0] == '0' :
+            if text =='.' and (self.entry_text[-1] == '.' or '.' in self.entry_text) :
+                pass
+           
+            elif ((len(self.entry_text) ==0 or self.entry_text[0] == '0') and '.' not in self.entry_text) :
+               
                 self.entry_text = text
+                if text == '.':
+                    self.entry_text = "0."
+                
             else:
                 self.entry_text += text
             self.last_entry = self.entry_text
 
            
-        print("Entry:"+self.entry_text+"\tStack:"+self.stack_text)
+        # print("Entry:"+self.entry_text+"\tStack:"+self.stack_text)
         self.update_entry_textlabel()
         self.update_stack_textlabel()
 
