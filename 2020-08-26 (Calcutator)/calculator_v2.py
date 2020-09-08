@@ -18,7 +18,7 @@ class UiMainWindow(object):
     def __init__(self):
         self.BUTTON_COL = 4
         self.BUTTON_ROW = 5
-        self.MAINTEXT_FONTSIZE = 48
+        self.maintext_fontsize = 48
         self.STACKTEXT_FONTSIZE = 14
         self.entry_text = '0'
         self.stack_text = ''
@@ -65,7 +65,12 @@ class UiMainWindow(object):
             "MainWindow", "<html><head/><body><p><span style=\" font-size:+"+str(fontsize)+"pt; color:#ffffff;\">"+text+"</span></p></body></html>"))
     
     def update_entry_textlabel(self):
-        self.update_textlabel(self.main_textlabel,self.entry_text,self.MAINTEXT_FONTSIZE)
+        if self.entry_text == "Cannot divide by zero":
+            self.maintext_fontsize = 29
+        else:
+            self.maintext_fontsize = 48
+        
+        self.update_textlabel(self.main_textlabel,self.entry_text,self.maintext_fontsize)
     
     def update_stack_textlabel(self):
        
@@ -81,7 +86,9 @@ class UiMainWindow(object):
             else:
                 text_cal += c
         try:
-            return str(eval(text_cal))
+            output = str(eval(text_cal))
+            return output
+            
         except ZeroDivisionError:
             return "Cannot divide by zero"
             
@@ -93,6 +100,8 @@ class UiMainWindow(object):
 
 
         
+     
+
         if text == 'DEL':
 
             self.entry_text = self.entry_text[:-1]
@@ -203,6 +212,7 @@ class UiMainWindow(object):
                 self.entry_text += text
             self.last_entry = self.entry_text
 
+       
            
         # print("Entry:"+self.entry_text+"\tStack:"+self.stack_text)
         self.update_entry_textlabel()
@@ -227,8 +237,10 @@ class UiMainWindow(object):
         
 
     def setupUi(self, MainWindow):
+        
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(450, 550)
+        # print(MainWindow.getsz)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -596,6 +608,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
+  
     ui = UiMainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
